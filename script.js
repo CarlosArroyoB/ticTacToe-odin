@@ -1,41 +1,47 @@
-const table = [];
+const table = [
+
+];
 
 
 function gameBoard(){
-
+    return {matriz: [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ],
+    imprimir() {
+        this.matriz.forEach(row => console.log(row.join(' ')));
+    }
+}
 }
 
 
-playerOne = [];
-p2 = []
+let playerOne = [1,2,9];
+const p2 = [4,5,6]
 
-function playerTwo(){
-    const choices = [];
-}
 
 function check (){
     
 }
 function shifts (p1,p2) {
-    while(!gameLogic()){
-    for (let i = 0; i < 9; i++){
-            if (i% 2 === 0){
-                const val = prompt("Player 1, enter a number between 1 and 9");
-                p1.push(val);
-            } else {
-                const val = prompt("Player 2, enter a number between 1 and 9");
-                p2.push(val);
-            }
+   
+                
+        if (gameLogic(p1)){
+            console.log("Player 1 wins")
+            
         }
-    }
-    if (gameLogic()){
-        console.log("You win");
-    } else {
-        console.log("You lose");
-    }
+        
+        else if (gameLogic(p2)){
+            console.log("Player 2 wins")
+        }
 }
-function gameLogic (){
-    const choices = [1, 5,9 ];
+    
+            
+       
+
+//funcion que indica quien gana si es TRUE
+function gameLogic (player){
+
     const winingCombs = [
         [1,2,3],
         [4,5,6],
@@ -46,10 +52,9 @@ function gameLogic (){
         [2,5,8],
         [3,6,9],
     ]
-    return winingCombs.some(comb => comb.every(num => choices.includes(num)));
-
-
+    return winingCombs.some(comb => comb.every(num => player.includes(num)));
 }
 
-console.log(gameLogic());
-shifts(playerOne, p2);
+shifts(playerOne,p2);
+console.log(gameBoard().matriz);
+console.log(gameBoard().imprimir());
