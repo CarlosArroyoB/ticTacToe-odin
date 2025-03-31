@@ -14,8 +14,9 @@ const player = (function() {
 
 const playerBase1 = []
 const playerBase2 = []
-
 const mainGame = () =>{
+    let contPlayer1 = 0;
+    let contPlayer2 = 0;
     const updateBoard  =() =>{
         cells.forEach((cell,index)=>{
             cell.textContent = gameBoard().matriz[index]
@@ -39,22 +40,26 @@ const mainGame = () =>{
         return winner;
     }
     
-    const endGame = (p1,p2) =>{
+    const endGame = (p1, p2) => {
         if (winsLogic(p1)) {
             console.log("Player 1 wins");
             alert("Player 1 wins!");
+            contPlayer1++;
+            document.getElementById("scorePlayer1").textContent = contPlayer1; // Actualiza la puntuación en pantalla
             return true; // Detén el juego
         } else if (winsLogic(p2)) {
             console.log("Player 2 wins");
             alert("Player 2 wins!");
+            contPlayer2++;
+            document.getElementById("scorePlayer2").textContent = contPlayer2; // Actualiza la puntuación en pantalla
             return true; // Detén el juego
         } else if (p1.length == 5) {
             console.log("EMPATE");
             alert("EMPATE");
             return true; // Detén el juego
-        } 
+        }
         return false; // Continúa el juego si no hay ganador
-    }
+    };
     const createPlays = (id)=>{
         const cellNumber = parseInt(id, 10);
         if (player.currentPlayer === 'X') {
@@ -70,46 +75,76 @@ const mainGame = () =>{
         }
         
     }
+
+    const restartGame = () => {
+        // Vaciar los arreglos de movimientos
+        playerBase1.length = 0;
+        playerBase2.length = 0;
+    
+        // Reiniciar el tablero visual
+        board.matriz = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
+        cells.forEach(cell => {
+            cell.textContent = "-";
+            cell.removeEventListener("click", handleClick); // Elimina los eventos existentes
+        });
+    
+        // Reactivar los clics en las celdas
+        play();
+    };
     const switchPlayer = () => {
         player.currentPlayer = player.currentPlayer === "X" ? "O" : "X";
     }
 
-    return {updateBoard, winsLogic,switchPlayer,endGame, createPlays}
+    return {updateBoard, winsLogic,switchPlayer,endGame, createPlays,restartGame, contPlayer1,contPlayer2}
 }
 
 const game = mainGame()
 const board= gameBoard();
 
-const play = () =>{
+const handleClick = function (event) {
+    event.preventDefault();
+
+    const cell = event.target;
+    const index = Array.from(cells).indexOf(cell); // Obtén el índice de la celda clicada
+    const cellId = cell.id;
+
+    if (board.matriz[index] === "-") {
+        // Actualiza el tablero y registra el movimiento
+        board.matriz[index] = player.currentPlayer;
+        cell.textContent = player.currentPlayer;
+        game.createPlays(cellId);
+
+        console.log(playerBase1);
+        console.log(playerBase2);
+
+        // Verifica si el juego ha terminado
+        if (game.endGame(playerBase1, playerBase2)) {
+            // Desactiva los clics en todas las celdas
+            cells.forEach(cell => cell.removeEventListener("click", handleClick));
+        } else {
+            // Cambia de jugador si el juego no ha terminado
+            game.switchPlayer();
+        }
+    } else {
+        console.log("Esta celda ya está ocupada.");
+    }
+    document.getElementById("restartButton").addEventListener("click", () => {
+        game.restartGame();
+    });
+};
+
+const play = () => {
     game.updateBoard();
-    console.log("El juego comienza. El jugador inicial es: " + player.currentPlayer); // Mensaje inicial
-    cells.forEach((cell,index)=>{
-        cell.addEventListener("click",function handleClick (event) {
-            event.preventDefault();
-            
-            const cellId = event.target.id;
-            game.createPlays(cellId);
-            console.log(playerBase1)
-            console.log(playerBase2)
 
-            if(board.matriz[index] == "-"){
-                board.matriz[index] = player.currentPlayer;
-                cell.textContent = player.currentPlayer;
+    // Define la función handleClick fuera del bucle
+    
 
-                if (game.endGame(playerBase1, playerBase2)) {
-                    cells.forEach(cell => cell.removeEventListener("click", handleClick)); 
-                }else{
-                    game.switchPlayer();
-                }
-            }
-
-            
-        })
-    })
-}
-
+    // Agrega el evento click a cada celda
+    cells.forEach(cell => {
+        cell.addEventListener("click", handleClick);
+    });
+};
 
 play();
-
 
 
