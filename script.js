@@ -41,20 +41,17 @@ const mainGame = () =>{
     }
     
     const endGame = (p1, p2) => {
-        if (winsLogic(p1)) {
-            console.log("Player 1 wins");
-            alert("Player 1 wins!");
+        if (winsLogic(p1)) {     
             contPlayer1++;
             document.getElementById("scorePlayer1").textContent = contPlayer1; // Actualiza la puntuación en pantalla
+            alert("Player 1 wins!");
             return true; // Detén el juego
         } else if (winsLogic(p2)) {
-            console.log("Player 2 wins");
-            alert("Player 2 wins!");
             contPlayer2++;
             document.getElementById("scorePlayer2").textContent = contPlayer2; // Actualiza la puntuación en pantalla
+            alert("Player 2 wins!");
             return true; // Detén el juego
         } else if (p1.length == 5) {
-            console.log("EMPATE");
             alert("EMPATE");
             return true; // Detén el juego
         }
@@ -114,8 +111,6 @@ const handleClick = function (event) {
         cell.textContent = player.currentPlayer;
         game.createPlays(cellId);
 
-        console.log(playerBase1);
-        console.log(playerBase2);
 
         // Verifica si el juego ha terminado
         if (game.endGame(playerBase1, playerBase2)) {
@@ -136,10 +131,6 @@ const handleClick = function (event) {
 const play = () => {
     game.updateBoard();
 
-    // Define la función handleClick fuera del bucle
-    
-
-    // Agrega el evento click a cada celda
     cells.forEach(cell => {
         cell.addEventListener("click", handleClick);
     });
